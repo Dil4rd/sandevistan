@@ -64,6 +64,9 @@ Desktop.ini
 deckard.py
 analyzer.py
 
+# Auto-generated version file
+src/sandevistan/_version.py
+
 # Build artifacts
 *.pyc
 *.pyo
