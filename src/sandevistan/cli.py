@@ -5,7 +5,7 @@ import click
 
 from . import __version__
 from .analyzer import analyze_crash_files
-from .config import get_api_key, save_api_key, get_config_path, get_config
+from .config import get_api_key, save_api_key, get_model, save_model, get_config_path, get_config
 
 
 @click.group()
@@ -20,8 +20,9 @@ def cli():
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed output")
 def analyze(subfolder: str, verbose: bool):
     """Analyze crash files in the specified subfolder."""
-    # Get API key from config
+    # Get API key and model from config
     api_key = get_api_key()
+    model = get_model()
 
     if not api_key:
         click.echo("Error: Google API key not configured.", err=True)
@@ -31,10 +32,11 @@ def analyze(subfolder: str, verbose: bool):
         sys.exit(1)
 
     click.echo(f"Analyzing crashes in: {subfolder}")
+    click.echo(f"Using model: {model}")
     click.echo("-" * 80)
 
     try:
-        result = analyze_crash_files(subfolder, api_key)
+        result = analyze_crash_files(subfolder, api_key, model)
         click.echo(f"\nFound {len(result['ips_files'])} IPS file(s)")
         click.echo(result["analysis"])
     except FileNotFoundError as e:
@@ -50,9 +52,10 @@ def analyze(subfolder: str, verbose: bool):
 
 @cli.command()
 @click.option("--api-key", help="Set the Google API key")
+@click.option("--model", help="Set the Gemini model to use")
 @click.option("--show", is_flag=True, help="Display current configuration")
 @click.option("--path", is_flag=True, help="Show config file location")
-def config(api_key: str, show: bool, path: bool):
+def config(api_key: str, model: str, show: bool, path: bool):
     """Manage Sandevistan configuration."""
     if path:
         click.echo(f"Config file: {get_config_path()}")
@@ -72,6 +75,10 @@ def config(api_key: str, show: bool, path: bool):
                 click.echo(f"  API Key: {masked_key}")
             else:
                 click.echo("  API Key: Not set")
+
+            # Show model
+            model_name = get_model()
+            click.echo(f"  Model: {model_name}")
         return
 
     if api_key:
@@ -79,13 +86,20 @@ def config(api_key: str, show: bool, path: bool):
         click.echo(f"API key saved to: {get_config_path()}")
         return
 
+    if model:
+        save_model(model)
+        click.echo(f"Model set to: {model}")
+        click.echo(f"Config saved to: {get_config_path()}")
+        return
+
     # No options provided, show help
     click.echo("Error: Please provide an option.", err=True)
     click.echo("")
     click.echo("Examples:")
-    click.echo("  sandy config --api-key YOUR_KEY    # Set API key")
-    click.echo("  sandy config --show                # Show current config")
-    click.echo("  sandy config --path                # Show config file location")
+    click.echo("  sandy config --api-key YOUR_KEY               # Set API key")
+    click.echo("  sandy config --model gemini-3-flash-preview   # Set model")
+    click.echo("  sandy config --show                           # Show current config")
+    click.echo("  sandy config --path                           # Show config file location")
     sys.exit(1)
 
 
