@@ -1,29 +1,39 @@
-<p align="center">
-  <img src="logo.png" alt="Deckard Logo" width="200"/>
-</p>
-
-# Deckard
+# Sandevistan
 
 AI-powered CLI tool that analyzes Apple IPS crash files using LangGraph and Google Gemini Flash.
 
-## Quick Start
+## Installation
 
-### Install with uvx (recommended - fast!)
+### Option 1: Homebrew (macOS)
 ```bash
-uvx --from . deckard --help
+brew tap Dil4rd/sandevistan
+brew install sandevistan
 ```
 
-### Or install in development mode
+### Option 2: uvx (fast, cross-platform)
+```bash
+# Install from PyPI (when published)
+uvx sandevistan
+
+# Or run locally without installation
+uvx --from . sandy --help
+```
+
+### Option 3: pipx
+```bash
+pipx install sandevistan
+```
+
+### Option 4: Development mode
 ```bash
 uv pip install -e .
-deckard --help
 ```
 
 ## Setup
 
 1. Configure your Google API key:
 ```bash
-deckard config --api-key YOUR_KEY
+sandy config --api-key YOUR_KEY
 ```
 
 Get your API key at: https://makersuite.google.com/app/apikey
@@ -32,24 +42,24 @@ Get your API key at: https://makersuite.google.com/app/apikey
 
 ### Analyze crash files
 ```bash
-deckard analyze <path/to/crash/folder>
+sandy analyze <path/to/crash/folder>
 ```
 
 Example:
 ```bash
-deckard analyze ~/Library/Logs/DiagnosticReports/
+sandy analyze ~/Library/Logs/DiagnosticReports/
 ```
 
 ### Configuration commands
 ```bash
-deckard config --show                # Display current config
-deckard config --path                # Show config file location
-deckard config --api-key YOUR_KEY    # Set/update API key
+sandy config --show                # Display current config
+sandy config --path                # Show config file location
+sandy config --api-key YOUR_KEY    # Set/update API key
 ```
 
 ## How it works
 
-Deckard will:
+Sandevistan will:
 1. Scan the specified folder for `.ips` files
 2. Analyze each crash file using Google Gemini Flash
 3. Output plain-language explanations including:

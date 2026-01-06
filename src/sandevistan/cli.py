@@ -1,4 +1,4 @@
-"""Command-line interface for Deckard."""
+"""Command-line interface for Sandevistan."""
 
 import sys
 import click
@@ -9,9 +9,9 @@ from .config import get_api_key, save_api_key, get_config_path, get_config
 
 
 @click.group()
-@click.version_option(version=__version__, prog_name="deckard")
+@click.version_option(version=__version__, prog_name="sandy")
 def cli():
-    """Deckard - AI agent to analyze Apple crash files."""
+    """Sandevistan - AI agent to analyze Apple crash files."""
     pass
 
 
@@ -26,7 +26,7 @@ def analyze(subfolder: str, verbose: bool):
     if not api_key:
         click.echo("Error: Google API key not configured.", err=True)
         click.echo("")
-        click.echo("Run: deckard config --api-key YOUR_KEY", err=True)
+        click.echo("Run: sandy config --api-key YOUR_KEY", err=True)
         click.echo("Get your API key at: https://makersuite.google.com/app/apikey", err=True)
         sys.exit(1)
 
@@ -53,7 +53,7 @@ def analyze(subfolder: str, verbose: bool):
 @click.option("--show", is_flag=True, help="Display current configuration")
 @click.option("--path", is_flag=True, help="Show config file location")
 def config(api_key: str, show: bool, path: bool):
-    """Manage Deckard configuration."""
+    """Manage Sandevistan configuration."""
     if path:
         click.echo(f"Config file: {get_config_path()}")
         return
@@ -83,9 +83,9 @@ def config(api_key: str, show: bool, path: bool):
     click.echo("Error: Please provide an option.", err=True)
     click.echo("")
     click.echo("Examples:")
-    click.echo("  deckard config --api-key YOUR_KEY    # Set API key")
-    click.echo("  deckard config --show                # Show current config")
-    click.echo("  deckard config --path                # Show config file location")
+    click.echo("  sandy config --api-key YOUR_KEY    # Set API key")
+    click.echo("  sandy config --show                # Show current config")
+    click.echo("  sandy config --path                # Show config file location")
     sys.exit(1)
 
 

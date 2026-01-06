@@ -3,9 +3,12 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "deckard"
+name = "sandevistan"
 version = "0.1.0"
-description = "AI agent to analyze Apple crash files"
+description = "AI-powered CLI tool to analyze Apple crash files"
+authors = [
+    {name = "Dil4rd"}
+]
 requires-python = ">=3.11"
 dependencies = [
     "langgraph>=0.2.0",
@@ -14,10 +17,27 @@ dependencies = [
     "tomli-w>=1.0.0",
 ]
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["crash", "analysis", "apple", "ios", "macos", "ai", "gemini", "langgraph"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Debuggers",
+    "Topic :: System :: Logging",
+]
+
+[project.urls]
+Homepage = "https://github.com/Dil4rd/sandevistan"
+Repository = "https://github.com/Dil4rd/sandevistan"
+Issues = "https://github.com/Dil4rd/sandevistan/issues"
 
 [project.scripts]
-deckard = "deckard.cli:main"
+sandy = "sandevistan.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

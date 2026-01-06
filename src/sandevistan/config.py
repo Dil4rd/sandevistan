@@ -1,4 +1,4 @@
-"""Configuration management for Deckard."""
+"""Configuration management for Sandevistan."""
 
 import os
 import tomllib
@@ -12,9 +12,9 @@ def get_config_path() -> Path:
     # Try XDG config directory first
     xdg_config = os.environ.get("XDG_CONFIG_HOME")
     if xdg_config:
-        config_dir = Path(xdg_config) / "deckard"
+        config_dir = Path(xdg_config) / "sandevistan"
     else:
-        config_dir = Path.home() / ".config" / "deckard"
+        config_dir = Path.home() / ".config" / "sandevistan"
 
     config_dir.mkdir(parents=True, exist_ok=True)
     return config_dir / "config.toml"
