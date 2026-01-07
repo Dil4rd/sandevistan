@@ -38,6 +38,7 @@ Issues = "https://github.com/Dil4rd/sandevistan/issues"
 
 [project.scripts]
 sandy = "sandevistan.cli:main"
+sandevistan = "sandevistan.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

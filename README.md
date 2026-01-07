@@ -5,7 +5,7 @@
 Stop staring at cryptic crash logs. Sandevistan uses AI to translate Apple IPS crash files into plain English explanations—instantly.
 
 ```bash
-sandy analyze crash.ips
+sandevistan analyze crash.ips  # or 'sandy' for short
 # ✨ Get human-readable crash analysis powered by Google Gemini Flash
 ```
 
@@ -34,7 +34,7 @@ brew install sandevistan
 
 **Cross-platform (uvx - recommended):**
 ```bash
-uvx sandevistan
+uvx sandevistan  # or 'sandy' for short
 ```
 
 **Alternative (pipx):**
@@ -45,7 +45,8 @@ pipx install sandevistan
 ### 🔑 Setup (one-time)
 
 ```bash
-sandy config --api-key YOUR_GOOGLE_API_KEY
+sandevistan config --api-key YOUR_GOOGLE_API_KEY
+# or use 'sandy' for brevity: sandy config --api-key YOUR_GOOGLE_API_KEY
 ```
 
 🔗 Get your free API key: [Google AI Studio](https://makersuite.google.com/app/apikey)
@@ -53,6 +54,8 @@ sandy config --api-key YOUR_GOOGLE_API_KEY
 ---
 
 ## 💡 Usage
+
+> **Note:** Both `sandevistan` and `sandy` commands work identically. Examples below use `sandy` for brevity.
 
 ### Single file analysis
 ```bash
@@ -105,7 +108,7 @@ Sandevistan analyzes each crash and provides:
 git clone https://github.com/Dil4rd/sandevistan.git
 cd sandevistan
 
-# Run without installation
+# Run without installation (use 'sandy' or 'sandevistan')
 uvx --from . sandy analyze crash.ips
 
 # Install in editable mode
