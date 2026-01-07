@@ -43,5 +43,8 @@ sandevistan = "sandevistan.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+sandevistan = ["py.typed"]
+
 [tool.setuptools_scm]
 version_file = "src/sandevistan/_version.py"
