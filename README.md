@@ -90,10 +90,10 @@ sandy config --model gemini-2.0    # 🤖 Change AI model
 
 Sandevistan analyzes each crash and provides:
 
-✅ **What crashed** - The process, thread, and component that failed
-✅ **Why it crashed** - Root cause in plain English (memory issue, null pointer, etc.)
-✅ **Key details** - Exception types, addresses, and relevant code symbols
-✅ **Fast analysis** - Powered by Google Gemini Flash (< 1 second per file)
+- ✅ **What crashed** - The process, thread, and component that failed
+- ✅ **Why it crashed** - Root cause in plain English (memory issue, null pointer, etc.)
+- ✅ **Key details** - Exception types, addresses, and relevant code symbols
+- ✅ **Fast analysis** - Powered by Google Gemini Flash (< 1 second per file)
 
 ---
 
