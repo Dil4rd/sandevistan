@@ -1,74 +1,193 @@
-# Sandevistan
+# ⚡ Sandevistan
 
-AI-powered CLI tool that analyzes Apple IPS crash files using LangGraph and Google Gemini Flash.
+> **Decode macOS crashes in seconds, not hours**
 
-## Installation
+Stop staring at cryptic crash logs. Sandevistan uses AI to translate Apple IPS crash files into plain English explanations—instantly.
 
-### Option 1: Homebrew (macOS)
+```bash
+sandy analyze crash.ips
+# ✨ Get human-readable crash analysis powered by Google Gemini Flash
+```
+
+---
+
+## 🎯 Why Sandevistan?
+
+| Problem | Solution |
+|---------|----------|
+| 😵 IPS files are unreadable | 📖 Get plain-language explanations |
+| ⏰ Manual analysis takes hours | ⚡ Instant AI-powered insights |
+| 🤔 Root causes hidden in stack traces | 🎯 Direct "what crashed & why" answers |
+| 📚 Need deep iOS/macOS knowledge | 🤖 AI reads the technical details for you |
+
+---
+
+## 🚀 Quick Start
+
+### 📦 Installation
+
+**macOS (Homebrew):**
 ```bash
 brew tap Dil4rd/sandevistan
 brew install sandevistan
 ```
 
-### Option 2: uvx (fast, cross-platform)
+**Cross-platform (uvx - recommended):**
 ```bash
-# Install from PyPI (when published)
 uvx sandevistan
-
-# Or run locally without installation
-uvx --from . sandy --help
 ```
 
-### Option 3: pipx
+**Alternative (pipx):**
 ```bash
 pipx install sandevistan
 ```
 
-### Option 4: Development mode
+### 🔑 Setup (one-time)
+
 ```bash
-uv pip install -e .
+sandy config --api-key YOUR_GOOGLE_API_KEY
 ```
 
-## Setup
+🔗 Get your free API key: [Google AI Studio](https://makersuite.google.com/app/apikey)
 
-1. Configure your Google API key:
+---
+
+## 💡 Usage
+
+### Single file analysis
 ```bash
-sandy config --api-key YOUR_KEY
+sandy analyze crash.ips
 ```
 
-Get your API key at: https://makersuite.google.com/app/apikey
-
-## Usage
-
-### Analyze crash files
-```bash
-sandy analyze <path/to/crash/folder>
-```
-
-Example:
+### Analyze a folder
 ```bash
 sandy analyze ~/Library/Logs/DiagnosticReports/
 ```
+*Tip: When multiple files are found, you'll get an interactive menu to select which ones to analyze*
 
-### Configuration commands
-```bash
-sandy config --show                # Display current config
-sandy config --path                # Show config file location
-sandy config --api-key YOUR_KEY    # Set/update API key
+### Interactive file selection
+```
+Found 3 IPS files in ./crashes:
+  [0] All files
+  [1] AppCrash_2024-01-15.ips
+  [2] KernelPanic_2024-01-16.ips
+  [3] SegFault_2024-01-17.ips
+
+Select files to analyze (e.g., "1,3" or "0" for all): _
 ```
 
-## How it works
+### Configuration
+```bash
+sandy config --show                # 📋 View current settings
+sandy config --path                # 📂 Show config location
+sandy config --api-key YOUR_KEY    # 🔐 Update API key
+sandy config --model gemini-2.0    # 🤖 Change AI model
+```
 
-Sandevistan will:
-1. Scan the specified folder for `.ips` files
-2. Analyze each crash file using Google Gemini Flash
-3. Output plain-language explanations including:
-   - What crashed
-   - Why it crashed (root cause)
-   - Key technical details
+---
 
-## Requirements
+## 🔍 What You Get
 
-- Python 3.11+
-- Google API key
-- `uv` package manager (install from https://github.com/astral-sh/uv)
+Sandevistan analyzes each crash and provides:
+
+✅ **What crashed** - The process, thread, and component that failed
+✅ **Why it crashed** - Root cause in plain English (memory issue, null pointer, etc.)
+✅ **Key details** - Exception types, addresses, and relevant code symbols
+✅ **Fast analysis** - Powered by Google Gemini Flash (< 1 second per file)
+
+---
+
+## 🛠️ Development
+
+### Local development
+```bash
+# Clone the repo
+git clone https://github.com/Dil4rd/sandevistan.git
+cd sandevistan
+
+# Run without installation
+uvx --from . sandy analyze crash.ips
+
+# Install in editable mode
+uv pip install -e .
+```
+
+### Requirements
+- 🐍 Python 3.11+
+- 🔑 Google API key (free tier available)
+- 📦 `uv` package manager ([install here](https://github.com/astral-sh/uv))
+
+---
+
+## 🏗️ Architecture
+
+Built with modern Python tools for speed and reliability:
+
+- **🧠 AI Engine:** Google Gemini Flash (fast, accurate crash analysis)
+- **🔄 Workflow:** LangGraph (structured multi-step analysis pipeline)
+- **⚙️ CLI:** Click (user-friendly command interface)
+- **📦 Package Manager:** uv (blazing fast dependency resolution)
+
+---
+
+## 📝 Example Output
+
+```
+Analyzing file: MyApp_2024-01-15.ips
+Using model: gemini-2.0-flash-exp
+────────────────────────────────────────────────────────────────────────────────
+
+Analyzed 1 IPS file(s)
+
+================================================================================
+File: MyApp_2024-01-15.ips
+================================================================================
+
+**What crashed:** MyApp (process) crashed in the main thread
+
+**Why it crashed:** Null pointer dereference - The app attempted to access
+memory at address 0x0, which is not a valid memory location. This typically
+happens when trying to use an object that hasn't been initialized.
+
+**Key technical details:**
+- Exception Type: EXC_BAD_ACCESS (SIGSEGV)
+- Exception Codes: KERN_INVALID_ADDRESS at 0x0000000000000000
+- Crashed Thread: 0 (Main thread)
+- Relevant Frame: MyApp`-[MyViewController buttonTapped:] + 42
+```
+
+---
+
+## 🤝 Contributing
+
+Found a bug? Have an idea? Contributions are welcome!
+
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details
+
+---
+
+## 🙏 Acknowledgments
+
+- Powered by [Google Gemini](https://deepmind.google/technologies/gemini/)
+- Built with [LangGraph](https://github.com/langchain-ai/langgraph)
+- Package management by [uv](https://github.com/astral-sh/uv)
+
+---
+
+<div align="center">
+
+**⚡ Stop debugging. Start understanding.**
+
+[Get Started](#-quick-start) • [Report Bug](https://github.com/Dil4rd/sandevistan/issues) • [Request Feature](https://github.com/Dil4rd/sandevistan/issues)
+
+</div>
