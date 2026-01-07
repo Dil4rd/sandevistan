@@ -60,10 +60,6 @@ htmlcov/
 Thumbs.db
 Desktop.ini
 
-# Old script (replaced by CLI)
-deckard.py
-analyzer.py
-
 # Auto-generated version file
 src/sandevistan/_version.py
 
