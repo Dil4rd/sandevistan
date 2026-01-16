@@ -1,24 +1,27 @@
 # ⚡ Sandevistan
 
-> **Decode macOS crashes in seconds, not hours**
+> **AI-augmented Apple security research toolkit**
 
-Stop staring at cryptic crash logs. Sandevistan uses AI to translate Apple IPS crash files into plain English explanations—instantly.
+Sandevistan augments your security research with AI-powered tools for analyzing Apple crash reports, tracking security updates, and more.
 
 ```bash
-sandevistan analyze crash.ips  # or 'sandy' for short
-# ✨ Get human-readable crash analysis powered by Google Gemini Flash
+sandy analyze crash.ips      # AI-powered crash analysis
+sandy scrape                 # Fetch Apple security updates
+# ✨ Powered by Google Gemini Flash
 ```
 
 ---
 
 ## 🎯 Why Sandevistan?
 
-| Problem | Solution |
-|---------|----------|
-| 😵 IPS files are unreadable | 📖 Get plain-language explanations |
-| ⏰ Manual analysis takes hours | ⚡ Instant AI-powered insights |
-| 🤔 Root causes hidden in stack traces | 🎯 Direct "what crashed & why" answers |
-| 📚 Need deep iOS/macOS knowledge | 🤖 AI reads the technical details for you |
+Like the Cyberpunk cyberware it's named after, Sandevistan augments your capabilities—letting you process security data at machine speed.
+
+| Challenge | How Sandevistan Helps |
+|-----------|----------------------|
+| 😵 Crash logs are cryptic | 📖 AI translates IPS files to plain English |
+| ⏰ Tracking updates is tedious | 🔄 Auto-scrape Apple security advisories |
+| 🤔 CVE details scattered | 📊 Structured data export (JSON/CSV/SQLite) |
+| 📚 Need deep Apple internals knowledge | 🤖 AI handles the technical analysis |
 
 ---
 
@@ -45,30 +48,30 @@ pipx install sandevistan
 ### 🔑 Setup (one-time)
 
 ```bash
-sandevistan config --api-key YOUR_GOOGLE_API_KEY
-# or use 'sandy' for brevity: sandy config --api-key YOUR_GOOGLE_API_KEY
+sandy config --api-key YOUR_GOOGLE_API_KEY
 ```
 
 🔗 Get your free API key: [Google AI Studio](https://makersuite.google.com/app/apikey)
 
 ---
 
-## 💡 Usage
+## 🔧 Features
 
 > **Note:** Both `sandevistan` and `sandy` commands work identically. Examples below use `sandy` for brevity.
 
-### Single file analysis
-```bash
-sandy analyze crash.ips
-```
+### 🧠 Crash Analysis
 
-### Analyze a folder
+Analyze Apple IPS crash files with AI-powered explanations.
+
 ```bash
+# Single file
+sandy analyze crash.ips
+
+# Entire folder
 sandy analyze ~/Library/Logs/DiagnosticReports/
 ```
-*Tip: When multiple files are found, you'll get an interactive menu to select which ones to analyze*
 
-### Interactive file selection
+When multiple files are found, you'll get an interactive menu:
 ```
 Found 3 IPS files in ./crashes:
   [0] All files
@@ -79,24 +82,74 @@ Found 3 IPS files in ./crashes:
 Select files to analyze (e.g., "1,3" or "0" for all): _
 ```
 
-### Configuration
+**What you get:**
+- ✅ **What crashed** — Process, thread, and component that failed
+- ✅ **Why it crashed** — Root cause in plain English
+- ✅ **Key details** — Exception types, addresses, and code symbols
+
+### 🔍 Security Updates Scraper
+
+Scrape Apple's security updates and CVE data into structured formats.
+
+```bash
+# Scrape to all formats (JSON, CSV, SQLite)
+sandy scrape
+
+# Specific format(s)
+sandy scrape -f json
+sandy scrape -f json -f csv
+
+# Custom output filename
+sandy scrape -o security_updates
+
+# Fast mode (skip detailed CVE scraping)
+sandy scrape --skip-advisories
+```
+
+**Output includes:**
+- 📋 Security update metadata (date, OS, version, URL)
+- 🐛 CVE entries with descriptions
+- 🔗 Links to full advisories
+
+### ⚙️ Configuration
+
 ```bash
 sandy config --show                # 📋 View current settings
 sandy config --path                # 📂 Show config location
 sandy config --api-key YOUR_KEY    # 🔐 Update API key
 sandy config --model gemini-2.0    # 🤖 Change AI model
+sandy config --delay 2.0           # ⏱️ Set scraper rate limit
 ```
 
 ---
 
-## 🔍 What You Get
+## 📝 Example Output
 
-Sandevistan analyzes each crash and provides:
+### Crash Analysis
+```
+Analyzing file: MyApp_2024-01-15.ips
+Using model: gemini-2.0-flash-exp
+────────────────────────────────────────────────────────────────────────────────
 
-- ✅ **What crashed** - The process, thread, and component that failed
-- ✅ **Why it crashed** - Root cause in plain English (memory issue, null pointer, etc.)
-- ✅ **Key details** - Exception types, addresses, and relevant code symbols
-- ✅ **Fast analysis** - Powered by Google Gemini Flash (< 1 second per file)
+**What crashed:** MyApp (process) crashed in the main thread
+
+**Why it crashed:** Null pointer dereference - The app attempted to access
+memory at address 0x0, which is not a valid memory location.
+
+**Key technical details:**
+- Exception Type: EXC_BAD_ACCESS (SIGSEGV)
+- Exception Codes: KERN_INVALID_ADDRESS at 0x0000000000000000
+- Crashed Thread: 0 (Main thread)
+- Relevant Frame: MyApp`-[MyViewController buttonTapped:] + 42
+```
+
+### Security Updates Scrape
+```
+Scraping Apple security updates...
+Found 156 security updates
+Fetching advisory details... [████████████████████] 100%
+Exported to: security_updates.json, security_updates.csv, security_updates.db
+```
 
 ---
 
@@ -108,8 +161,8 @@ Sandevistan analyzes each crash and provides:
 git clone https://github.com/Dil4rd/sandevistan.git
 cd sandevistan
 
-# Run without installation (use 'sandy' or 'sandevistan')
-uvx --from . sandy analyze crash.ips
+# Run without installation
+uvx --from . sandy --help
 
 # Install in editable mode
 uv pip install -e .
@@ -126,38 +179,21 @@ uv pip install -e .
 
 Built with modern Python tools for speed and reliability:
 
-- **🧠 AI Engine:** Google Gemini Flash (fast, accurate crash analysis)
-- **🔄 Workflow:** LangGraph (structured multi-step analysis pipeline)
+- **🧠 AI Engine:** Google Gemini Flash (fast, accurate analysis)
+- **🔄 Workflow:** LangGraph (structured multi-step pipelines)
 - **⚙️ CLI:** Click (user-friendly command interface)
 - **📦 Package Manager:** uv (blazing fast dependency resolution)
 
 ---
 
-## 📝 Example Output
+## 🗺️ Roadmap
 
-```
-Analyzing file: MyApp_2024-01-15.ips
-Using model: gemini-2.0-flash-exp
-────────────────────────────────────────────────────────────────────────────────
+Future augmentations planned:
 
-Analyzed 1 IPS file(s)
-
-================================================================================
-File: MyApp_2024-01-15.ips
-================================================================================
-
-**What crashed:** MyApp (process) crashed in the main thread
-
-**Why it crashed:** Null pointer dereference - The app attempted to access
-memory at address 0x0, which is not a valid memory location. This typically
-happens when trying to use an object that hasn't been initialized.
-
-**Key technical details:**
-- Exception Type: EXC_BAD_ACCESS (SIGSEGV)
-- Exception Codes: KERN_INVALID_ADDRESS at 0x0000000000000000
-- Crashed Thread: 0 (Main thread)
-- Relevant Frame: MyApp`-[MyViewController buttonTapped:] + 42
-```
+- [ ] IPS explannation caching for efficient token reuse
+- [ ] IPS deduplication
+- [ ] Incremental security updates scrape
+- [ ] Advanced analytics of security udpates
 
 ---
 
@@ -189,7 +225,7 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 <div align="center">
 
-**⚡ Stop debugging. Start understanding.**
+**⚡ Augment your Apple security research**
 
 [Get Started](#-quick-start) • [Report Bug](https://github.com/Dil4rd/sandevistan/issues) • [Request Feature](https://github.com/Dil4rd/sandevistan/issues)
 

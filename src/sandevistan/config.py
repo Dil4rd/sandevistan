@@ -114,6 +114,100 @@ def save_model(model_name: str) -> None:
         tomli_w.dump(config, f)
 
 
+def get_scraper_url() -> str:
+    """
+    Get the scraper URL from config file.
+
+    Returns:
+        URL string, defaults to Apple's security updates page if not configured
+    """
+    config_path = get_config_path()
+    if not config_path.exists():
+        return "https://support.apple.com/en-us/100100"
+
+    try:
+        with open(config_path, "rb") as f:
+            config = tomllib.load(f)
+            return config.get("scraper", {}).get("url", "https://support.apple.com/en-us/100100")
+    except Exception:
+        return "https://support.apple.com/en-us/100100"
+
+
+def get_scraper_delay() -> float:
+    """
+    Get the scraper delay from config file.
+
+    Returns:
+        Delay in seconds, defaults to 1.0 if not configured
+    """
+    config_path = get_config_path()
+    if not config_path.exists():
+        return 1.0
+
+    try:
+        with open(config_path, "rb") as f:
+            config = tomllib.load(f)
+            return float(config.get("scraper", {}).get("delay", 1.0))
+    except Exception:
+        return 1.0
+
+
+def save_scraper_url(url: str) -> None:
+    """
+    Save the scraper URL to the config file.
+
+    Args:
+        url: Scraper URL to save
+    """
+    config_path = get_config_path()
+
+    # Load existing config if it exists
+    config = {}
+    if config_path.exists():
+        try:
+            with open(config_path, "rb") as f:
+                config = tomllib.load(f)
+        except Exception:
+            pass
+
+    # Update scraper URL
+    if "scraper" not in config:
+        config["scraper"] = {}
+    config["scraper"]["url"] = url
+
+    # Save config
+    with open(config_path, "wb") as f:
+        tomli_w.dump(config, f)
+
+
+def save_scraper_delay(delay: float) -> None:
+    """
+    Save the scraper delay to the config file.
+
+    Args:
+        delay: Delay in seconds between requests
+    """
+    config_path = get_config_path()
+
+    # Load existing config if it exists
+    config = {}
+    if config_path.exists():
+        try:
+            with open(config_path, "rb") as f:
+                config = tomllib.load(f)
+        except Exception:
+            pass
+
+    # Update scraper delay
+    if "scraper" not in config:
+        config["scraper"] = {}
+    config["scraper"]["delay"] = delay
+
+    # Save config
+    with open(config_path, "wb") as f:
+        tomli_w.dump(config, f)
+
+
 def get_config() -> dict:
     """
     Get the full configuration.

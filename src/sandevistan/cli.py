@@ -7,7 +7,19 @@ import click
 
 from . import __version__
 from .analyzer import analyze_crash_files
-from .config import get_api_key, save_api_key, get_model, save_model, get_config_path, get_config
+from .config import (
+    get_api_key, save_api_key,
+    get_model, save_model,
+    get_scraper_url, save_scraper_url,
+    get_scraper_delay, save_scraper_delay,
+    get_config_path, get_config
+)
+from .scraper import (
+    scrape_security_updates,
+    save_to_json,
+    save_to_csv,
+    save_to_sqlite,
+)
 
 
 @click.group()
@@ -160,9 +172,11 @@ def analyze(path: str, verbose: bool):
 @cli.command()
 @click.option("--api-key", help="Set the Google API key")
 @click.option("--model", help="Set the Gemini model to use")
+@click.option("--url", help="Set the scraper URL")
+@click.option("--delay", type=float, help="Set the scraper delay in seconds")
 @click.option("--show", is_flag=True, help="Display current configuration")
 @click.option("--path", is_flag=True, help="Show config file location")
-def config(api_key: str, model: str, show: bool, path: bool):
+def config(api_key: str, model: str, url: str, delay: float, show: bool, path: bool):
     """Manage Sandevistan configuration."""
     if path:
         click.echo(f"Config file: {get_config_path()}")
@@ -186,6 +200,12 @@ def config(api_key: str, model: str, show: bool, path: bool):
             # Show model
             model_name = get_model()
             click.echo(f"  Model: {model_name}")
+
+            # Show scraper settings
+            scraper_url = get_scraper_url()
+            scraper_delay = get_scraper_delay()
+            click.echo(f"  Scraper URL: {scraper_url}")
+            click.echo(f"  Scraper Delay: {scraper_delay}s")
         return
 
     if api_key:
@@ -199,15 +219,92 @@ def config(api_key: str, model: str, show: bool, path: bool):
         click.echo(f"Config saved to: {get_config_path()}")
         return
 
+    if url:
+        save_scraper_url(url)
+        click.echo(f"Scraper URL set to: {url}")
+        click.echo(f"Config saved to: {get_config_path()}")
+        return
+
+    if delay is not None:
+        save_scraper_delay(delay)
+        click.echo(f"Scraper delay set to: {delay}s")
+        click.echo(f"Config saved to: {get_config_path()}")
+        return
+
     # No options provided, show help
     click.echo("Error: Please provide an option.", err=True)
     click.echo("")
     click.echo("Examples:")
     click.echo("  sandy config --api-key YOUR_KEY               # Set API key")
     click.echo("  sandy config --model gemini-3-flash-preview   # Set model")
+    click.echo("  sandy config --url https://example.com        # Set scraper URL")
+    click.echo("  sandy config --delay 2.0                      # Set scraper delay (seconds)")
     click.echo("  sandy config --show                           # Show current config")
     click.echo("  sandy config --path                           # Show config file location")
     sys.exit(1)
+
+
+@cli.command()
+@click.option(
+    "-f", "--format",
+    multiple=True,
+    type=click.Choice(['json', 'csv', 'sqlite'], case_sensitive=False),
+    help="Output format(s). Can specify multiple. If not specified, uses all formats."
+)
+@click.option(
+    "-o", "--output",
+    type=str,
+    default="updates",
+    help="Output filename (without extension). Default: updates"
+)
+@click.option(
+    "--skip-advisories",
+    is_flag=True,
+    help="Skip scraping individual advisory pages (faster, but no vulnerability details)"
+)
+@click.option("--verbose", "-v", is_flag=True, help="Show detailed output")
+def scrape(format, output, skip_advisories, verbose):
+    """Scrape Apple security updates and save to various formats."""
+    try:
+        # Get scraper config
+        url = get_scraper_url()
+        delay = get_scraper_delay()
+
+        # Default to all formats if none specified
+        if not format:
+            format = ['json', 'csv', 'sqlite']
+
+        click.echo("Scraping Apple security updates...")
+        click.echo(f"URL: {url}")
+        click.echo(f"Delay: {delay}s")
+        click.echo("-" * 80)
+
+        # Scrape the updates and advisory details
+        if skip_advisories:
+            click.echo("Skipping advisory details (--skip-advisories flag set)")
+        updates, vulnerabilities = scrape_security_updates(url, delay=delay, include_details=not skip_advisories)
+
+        # Save to requested formats
+        click.echo("\n" + "=" * 80)
+        click.echo("Saving data...")
+        click.echo("=" * 80)
+
+        for fmt in format:
+            if fmt == 'json':
+                save_to_json(updates, vulnerabilities, f"{output}.json")
+            elif fmt == 'csv':
+                save_to_csv(updates, vulnerabilities, output)
+            elif fmt == 'sqlite':
+                save_to_sqlite(updates, vulnerabilities, f"{output}.db")
+
+        click.echo("\nDone!")
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
 
 
 def main():
